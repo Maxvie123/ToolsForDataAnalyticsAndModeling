@@ -16,3 +16,10 @@ ToolsForDataAnalyticsAndModeling.Rproj
 data/arrival_data/*
 data/~$Miscellaneous Datasets.xlsx
 notebooks/first_figure.png
+.Rproj.user
+.RData
+code/R/Notebook With Other Languages.nb.html
+code/R/Notebook-With-Other-Languages.log
+code/R/Notebook-With-Other-Languages.pdf
+code/R/Sample R Notebook.nb.html
+code/R/Sample-R-Notebook.pdf
