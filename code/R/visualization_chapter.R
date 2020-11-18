@@ -9,6 +9,7 @@ library(tidyverse)
 # install.packages("tidyverse")
 # and retry the library() function.
 
+# MPG Dataset ----
 # use ? to get help.  Consider a dataset (e.g., mpg), ?mpg gives
 # a help page
 ?mpg
@@ -16,24 +17,26 @@ library(tidyverse)
 mpg # to show the first 10 rows + information
 # What is a tibble?  type 'tibble' and the look for the context menu
 
-# View/Edit in grid format and add to the environment
+# View/Edit in grid format and add to the environment (------>)
 # Note that you can edit existing values and add new 
 # values using this method.
 fix(mpg)
 
-# Is there a relationship between engine size and gas mileage?
+# Scatter plots -----
+# Start with a question: Is there a relationship between engine size and gas mileage?
 # Try a basic scatter plot:
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy))
 
 # help again - note the question mark in front of the function name
 ?ggplot()
-# Slide with Graphing Template
+# PPTX Slide with Graphing Template
 
 # color the dots by class (a new variable from the data).  Note that
 # the color parameter is inside the aesthetic function here
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
+# Does this help the plot?  Hurt the plot?
 
 # What about city mileage?
 ggplot(data = mpg) + 
@@ -47,15 +50,23 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = class))
 # Note the warning about using size for a discrete variable.
 
+# What if we flip the x and size?
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = class, y = hwy, size = displ))
+# Is this a "good" plot?  What does "good" mean in this sense?
+
 # use size and color
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, size = class, color=class))
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = class, y = hwy, size = displ, color=displ))
 
 # use transparency (alpha)
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, alpha = class))
 
-# orange dots - note that the color parameter is outside of
+# All orange dots - note that the color parameter is outside of
 # the aesthetic function here.
 ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy), color="orange")
@@ -64,6 +75,7 @@ ggplot(data = mpg) +
 ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color="blue"))
 # color is specified inside the aesthetic, not in the mapping.
+# Book describes other common mistakes/problems.
 
 #
 # Note that we can also define the mapping with the data rather than
@@ -76,7 +88,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
 ?iris
 tiris <- as_tibble(iris) 
 
-# other built-in datasets?
+# other built-in data sets?
 ?datasets
 library(help = "datasets")
 
@@ -94,7 +106,7 @@ ggplot(data = mpg) +
 ggplot(data = tiris) +
   geom_point(mapping = aes(x = Sepal.Length, y = Petal.Length)) +
   facet_wrap(~ Species)
-# facets should be factors
+# facets should be discrete
 
 # two variables (grid rather than wrap)
 ggplot(data = mpg) + 
@@ -172,20 +184,32 @@ ggplot(data = mpg[mpg$drv == 'f',],
   geom_smooth(method="glm", se=FALSE) +
   geom_point()
 
+# or of your prefer the dplyr approach
+ggplot(data = filter(mpg, drv == 'f'), 
+       mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_smooth(method="glm", se=FALSE) +
+  geom_point()
+
 
 # ---------------------------------
 #
 # Statistical transformations - for the previous plots, we
 # were plotting the data "as is" with different aesthetics.
 # Now let's look and some aggregation/transformations.
+
+# First, a new data set ...
+diamonds
+
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut))
 
-diamonds
+# if you prefer proportions ... DEPRECATED VERSION
+#ggplot(data = diamonds) + 
+#  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
 
 # if you prefer proportions ...
 ggplot(data = diamonds) + 
-  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
+  geom_bar(mapping = aes(x = cut, y = stat(prop), group = 1))
 
 #Help!
 ?geom_bar
@@ -193,14 +217,15 @@ ggplot(data = diamonds) +
 # More details
 vignette("ggplot2-specs")
 
+
 # Add some stats - stat_summary() summarizes the y values
 # for each unique x value
 ggplot(data = diamonds) + 
   stat_summary(
     mapping = aes(x = cut, y = depth),
-    fun.ymin = min,
-    fun.ymax = max,
-    fun.y = median
+    fun.min = min,
+    fun.max = max,
+    fun = median
   )
 
 ?stat_summary
@@ -218,9 +243,13 @@ ggplot(data = diamonds) +
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, fill = clarity))
 
-# diffrent layout, same information
+# different layout, same information
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+
+
+# Some additional examples in online_shoppers.R
+
 
 #
 # Coordinate Systems
